@@ -26,9 +26,9 @@ export const sequelize = new Sequelize({
 	storage: ':memory:',
 	timezone: '+09:00',
 	pool: {
-		max: 30,
-		min: 30,
-		idle: 10000
+		max: 5,
+		min: 5,
+		idle: 30
 	}
 });
 

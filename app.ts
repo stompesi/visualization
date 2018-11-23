@@ -5,7 +5,7 @@ import Transaction from './models/transaction'
 const http = require('http');
 const cron = require('node-cron');
 
-let blockNumber = 6752139;
+let blockNumber = 6743452;
 
 sequelize.sync();
 
@@ -42,9 +42,9 @@ function httpRequestCallback(response: any){
             transactionsRoot : block.transactionsRoot,
             extraData : block.extraData,
             sha3Uncles : block.sha3Uncles
-        }).then((results) => {
+        }).then(async (results) => {
             for(let i = 0 ; i < block.transactions.length ; i ++) {
-                Transaction.create({
+                await Transaction.create({
                     transactionHash : block.transactions[i].hash,
                     blockHash : block.transactions[i].blockHash,
                     from : block.transactions[i].from,
@@ -63,18 +63,27 @@ function httpRequestCallback(response: any){
                 });
             }
             console.log(parseInt(block.number, 16));
+
+            options.path = `/api?module=proxy&action=eth_getBlockByNumber&boolean=true&tag=${blockNumber.toString(16)}`
+            
+            blockNumber--;
+    
+            const req = http.request(options, httpRequestCallback);
+            req.end();
+
         }).catch((err) => {
         });
    });
 }
 
-cron.schedule('*/2 * * * * *', () => {
-	for(let i = 0 ; i < 5 ; i++) {
-        options.path = `/api?module=proxy&action=eth_getBlockByNumber&boolean=true&tag=${blockNumber.toString(16)}`
 
-        blockNumber--;
+// cron.schedule('*/2 * * * * *', () => {
+// 	for(let i = 0 ; i < 5 ; i++) {
+//         options.path = `/api?module=proxy&action=eth_getBlockByNumber&boolean=true&tag=${blockNumber.toString(16)}`
 
-        const req = http.request(options, httpRequestCallback);
-		req.end();
-	}
-});
+//         blockNumber--;
+
+//         const req = http.request(options, httpRequestCallback);
+// 		req.end();
+// 	}
+// });
