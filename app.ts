@@ -5,7 +5,7 @@ import Transaction from './models/transaction'
 const http = require('http');
 const cron = require('node-cron');
 
-let blockNumber = 6743452;
+let blockNumber = 6743449;
 
 sequelize.sync();
 
@@ -69,9 +69,10 @@ function httpRequestCallback(response: any){
             blockNumber--;
     
             const req = http.request(options, httpRequestCallback);
-            req.end();
+            req.end();s
 
         }).catch((err) => {
+            console.log(err);
         });
    });
 }
