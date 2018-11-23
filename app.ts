@@ -64,12 +64,7 @@ function httpRequestCallback(response: any){
             }
             console.log(parseInt(block.number, 16));
 
-            options.path = `/api?module=proxy&action=eth_getBlockByNumber&boolean=true&tag=${blockNumber.toString(16)}`
-            
-            blockNumber--;
-    
-            const req = http.request(options, httpRequestCallback);
-            req.end();s
+            requestBlock();
 
         }).catch((err) => {
             console.log(err);
@@ -77,6 +72,16 @@ function httpRequestCallback(response: any){
    });
 }
 
+function requestBlock() {
+    options.path = `/api?module=proxy&action=eth_getBlockByNumber&boolean=true&tag=${blockNumber.toString(16)}`
+    
+    blockNumber--;
+    
+    const req = http.request(options, httpRequestCallback);
+    req.end();
+}
+
+requestBlock();
 
 // cron.schedule('*/2 * * * * *', () => {
 // 	for(let i = 0 ; i < 5 ; i++) {
